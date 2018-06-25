@@ -1,0 +1,147 @@
+c6s302pc34+inlab@c6s302pc34 MINGW64 ~
+$ cd Downloads/
+
+c6s302pc34+inlab@c6s302pc34 MINGW64 ~/Downloads
+$ ls
+CursNodeJS/  desktop.ini
+
+c6s302pc34+inlab@c6s302pc34 MINGW64 ~/Downloads
+$ cd CursNodeJS/
+
+c6s302pc34+inlab@c6s302pc34 MINGW64 ~/Downloads/CursNodeJS (master)
+$ ls
+canvas-basic.html     canvas-mouse.html       README.md
+canvas-keyboard.html  Git-2.18.0-64-bit.exe*  VSCodeSetup-x64-1.24.1.exe*
+
+c6s302pc34+inlab@c6s302pc34 MINGW64 ~/Downloads/CursNodeJS (master)
+$ git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+        Git-2.18.0-64-bit.exe
+        VSCodeSetup-x64-1.24.1.exe
+        canvas-basic.html
+        canvas-keyboard.html
+        canvas-mouse.html
+
+nothing added to commit but untracked files present (use "git add" to track)
+
+c6s302pc34+inlab@c6s302pc34 MINGW64 ~/Downloads/CursNodeJS (master)
+$ git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+        canvas-basic.html
+        canvas-keyboard.html
+        canvas-mouse.html
+
+nothing added to commit but untracked files present (use "git add" to track)
+
+c6s302pc34+inlab@c6s302pc34 MINGW64 ~/Downloads/CursNodeJS (master)
+$ git add *
+
+c6s302pc34+inlab@c6s302pc34 MINGW64 ~/Downloads/CursNodeJS (master)
+$ git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+        new file:   canvas-basic.html
+        new file:   canvas-keyboard.html
+        new file:   canvas-mouse.html
+
+
+c6s302pc34+inlab@c6s302pc34 MINGW64 ~/Downloads/CursNodeJS (master)
+$ git commit -m ¨initial upload¨
+error: pathspec 'upload¨' did not match any file(s) known to git.
+
+c6s302pc34+inlab@c6s302pc34 MINGW64 ~/Downloads/CursNodeJS (master)
+$ git commit -m "initial upload"
+
+*** Please tell me who you are.
+
+Run
+
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+
+to set your account's default identity.
+Omit --global to set the identity only in this repository.
+
+fatal: unable to auto-detect email address (got 'inlab@c6s302pc34.(none)')
+
+c6s302pc34+inlab@c6s302pc34 MINGW64 ~/Downloads/CursNodeJS (master)
+$ ? git config --global user.email "rugi24@hotmail.com"
+bash: $'\302\226': command not found
+
+c6s302pc34+inlab@c6s302pc34 MINGW64 ~/Downloads/CursNodeJS (master)
+$git config --global user.email "rugi24@hotmail.com"
+
+c6s302pc34+inlab@c6s302pc34 MINGW64 ~/Downloads/CursNodeJS (master)
+$ git config --global user.name "Roger"
+
+c6s302pc34+inlab@c6s302pc34 MINGW64 ~/Downloads/CursNodeJS (master)
+$ ?git commit -m "initial upload"
+[master 9272be0] initial upload
+ 3 files changed, 283 insertions(+)
+ create mode 100644 canvas-basic.html
+ create mode 100644 canvas-keyboard.html
+ create mode 100644 canvas-mouse.html
+
+c6s302pc34+inlab@c6s302pc34 MINGW64 ~/Downloads/CursNodeJS (master)
+$ git push
+Enumerating objects: 6, done.
+Counting objects: 100% (6/6), done.
+Delta compression using up to 8 threads.
+Compressing objects: 100% (5/5), done.
+Writing objects: 100% (5/5), 1.93 KiB | 1.93 MiB/s, done.
+Total 5 (delta 1), reused 0 (delta 0)
+remote: Resolving deltas: 100% (1/1), done.
+To https://github.com/menuk/CursNodeJS.git
+   39a654b..9272be0  master -> master
+
+c6s302pc34+inlab@c6s302pc34 MINGW64 ~/Downloads/CursNodeJS (master)
+$ git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+        modified:   canvas-keyboard.html
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+        canvas-game.html
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+c6s302pc34+inlab@c6s302pc34 MINGW64 ~/Downloads/CursNodeJS (master)
+$ git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+        modified:   canvas-keyboard.html
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+        canvas-game.html
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+c6s302pc34+inlab@c6s302pc34 MINGW64 ~/Downloads/CursNodeJS (master)
