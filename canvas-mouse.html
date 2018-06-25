@@ -1,0 +1,59 @@
+<html>
+    <head>
+        <style>
+            body, body {
+                padding: 0;
+                margin: 0;
+            }
+            canvas {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- <h1>Titulo</h1> -->
+        <!-- <p>Algooooooo</p> -->
+
+        <!-- canvas id="myCanvas"></canvas> -->
+
+        <script>
+            console.log("hola")
+
+            //const canvas = document.getElementById('myCanvas')
+            const canvas = document.createElement('canvas')
+            const ctx = canvas.getContext('2d')
+            document.body.appendChild(canvas)
+
+            canvas.width = window.innerWidth
+            canvas.height = window.innerHeight
+
+            //rect
+            ctx.fillStyle = 'lightblue'
+            ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+            let x = 0
+            let y = 0
+            function render () {
+                requestAnimationFrame(render)
+                ctx.fillStyle = 'blue'
+                ctx.fillRect(x, y, 100, 100)
+            }
+
+            //setInterval(render, 16) //no va sincronizado con el timer del navegador
+            requestAnimationFrame(render)
+
+            document.addEventListener('mousemove', function (event) {
+                //debugger
+                x = event.pageX
+                y = event.pageY
+                
+            })
+
+            let isMouseDown = false
+
+
+
+        </script>
+    </body>
+</html>
