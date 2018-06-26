@@ -1,0 +1,45 @@
+<html>
+<head>
+    <style>
+        body, body {
+            padding: 0;
+            margin: 0;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<script>
+const canvas = document.createElement('canvas')
+const ctx = canvas.getContext('2d')
+document.body.appendChild(canvas)
+canvas.width = window.innerWidth
+canvas.height = window.innerHeight
+function drawCross () {
+    ctx.lineWidth = 5
+    const crossSize = 30
+    ctx.beginPath()
+    ctx.moveTo(crossSize, 0)
+    ctx.lineTo(-crossSize, 0)
+    ctx.moveTo(0, -crossSize)
+    ctx.lineTo(0, crossSize)
+    ctx.stroke()
+}
+ctx.save()
+// drawCross()
+ctx.translate(100, 100)
+drawCross()
+ctx.rotate(Math.PI/4)
+drawCross()
+ctx.translate(70, 0)
+drawCross()
+ctx.fillStyle = 'blue'
+ctx.fillRect(50, 50, 100, 100)
+ctx.restore()
+drawCross()
+</script>
+</body>
+</html>

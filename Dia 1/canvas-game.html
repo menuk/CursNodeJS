@@ -144,6 +144,13 @@
                     }
                 })
 
+                ctx.save()
+
+                ctx.translate(
+                    canvas.width/2 - player.x,
+                    canvas.height/2 - player.y
+                )
+
                 //coin render
                 coins.forEach(coin => {
                     ctx.fillStyle = 'yellow'
@@ -212,6 +219,8 @@
                 //player render
                 ctx.fillStyle = hasPlayerCollided ? 'cyan' : 'blue'
                 ctx.fillRect(player.x - player.size/2, player.y - player.size/2, player.size, player.size)
+
+                ctx.restore()
 
                 ctx.fillStyle = 'black'
                 ctx.font = '30px Helvetica'
