@@ -1,0 +1,31 @@
+<head>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <script>
+        const socket = io()
+
+        const username = prompt("Enter your username:")
+
+        socket.emit('set-username', username)
+
+        /*socket.emit('msg', 'hi my name is Roger')
+
+        socket.on('welcome', function() {
+            console.log('got welcome from server')
+        })*/
+
+        function sendMessage (msg) {
+            socket.emit('msg', msg)
+        }
+
+        socket.on('msg', function(msg) {
+            console.log(msg)
+        })
+        
+
+    /*    
+    promp('afds') //muestra un alert en pantalla, tiene un input field y hace return de lo escrito
+    */
+    </script>
+    </body>

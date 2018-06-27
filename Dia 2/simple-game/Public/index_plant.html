@@ -1,0 +1,116 @@
+<html>
+<head>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+            cursor: help;
+        }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+<script>
+const canvas = document.createElement('canvas')
+document.body.appendChild(canvas)
+canvas.width = window.innerWidth
+canvas.height = window.innerHeight
+const ctx = canvas.getContext('2d')
+
+let state = undefined
+let myPlayer = undefined
+function render () {
+    requestAnimationFrame(render)
+    if (state === undefined) return
+    const { players, enemies, coins } = state
+    ctx.save()
+    // background clear
+    ctx.fillStyle = 'white'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.translate(
+        canvas.width/2 - myPlayer.x,
+        canvas.height/2 - myPlayer.y
+    )
+    // player rendering
+    players.forEach(player => {
+        ctx.fillStyle = (player === myPlayer) ? 'blue' : 'lightblue' 
+        ctx.fillRect(player.x - player.size/2,
+                    player.y - player.size/2,
+                    player.size,
+                    player.size)
+    })
+    
+    /*
+    // draw viewport
+    ctx.strokeStyle = 'black'
+    ctx.beginPath()
+    ctx.rect(player.x - canvas.width/3,
+             player.y - canvas.height/3,
+             2 * canvas.width/3,
+             2 * canvas.height/3)
+    ctx.stroke()
+    // draw ctx cross/origin
+    ctx.strokeStyle = 'cyan'
+    ctx.lineWidth = 10
+    ctx.beginPath()
+    ctx.moveTo(-50, 0)
+    ctx.lineTo(50, 0)
+    ctx.moveTo(0, -50)
+    ctx.lineTo(0, 50)
+    ctx.stroke()
+    */
+    // enemy render
+    enemies.forEach(enemy => {
+        ctx.fillStyle = 'red'
+        ctx.fillRect(
+            enemy.x - enemy.size / 2,
+            enemy.y - enemy.size / 2,
+            enemy.size,
+            enemy.size
+        )
+    })
+    // coins render
+    coins.forEach((coin, i) => {
+        ctx.save()
+        ctx.translate(coin.x, coin.y)
+        ctx.rotate(Date.now() / 200 % (Math.PI*2))
+        ctx.fillStyle = 'magenta'
+        ctx.fillRect(-coin.size/2, -coin.size/2, coin.size, coin.size)
+        ctx.restore()
+    })
+    ctx.restore()
+    ctx.fillStyle = 'black'
+    ctx.font = "24px Helvetica"
+    ctx.fillText("Score: " + myPlayer.score, 20, 30)
+}
+requestAnimationFrame(render)
+const keyboard = {}
+const mapping = {
+    'a': 'left',
+    'd': 'right',
+    'w': 'up',
+    's': 'down'
+}
+document.addEventListener('keydown', function (event) {
+    keyboard[mapping[event.key]] = true
+    socket.emit('input', keyboard)
+})
+document.addEventListener('keyup', function (event) {
+    keyboard[mapping[event.key]] = false
+    socket.emit('input', keyboard)
+})
+const socket = io()
+socket.on('state', function (newState) {
+    state = newState
+    myPlayer = state.players.find(player => {
+        return (player.id === socket.id)
+    })
+    console.log(state, myPlayer)
+})
+</script>
+</body>
+</html>

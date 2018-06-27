@@ -1,0 +1,255 @@
+<html>
+    <head>
+        <style>
+            body, body {
+                padding: 0;
+                margin: 0;
+            }
+            canvas {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- <h1>Titulo</h1> -->
+        <!-- <p>Algooooooo</p> -->
+
+        <!-- canvas id="myCanvas"></canvas> -->
+
+        <script>
+            console.log("hola")
+
+            //const canvas = document.getElementById('myCanvas')
+            const canvas = document.createElement('canvas')
+            const ctx = canvas.getContext('2d')
+            document.body.appendChild(canvas)
+
+            canvas.width = window.innerWidth
+            canvas.height = window.innerHeight
+
+            //rect
+            ctx.fillStyle = 'lightblue'
+            ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+            const player = {
+                x: 0,
+                y: 0,
+                size: 20,
+                score: 0
+            }
+            let isMouseDown= false
+            const speed = 5
+            const enemies = []
+            while (enemies.length < 50) {
+                enemies.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: Math.random() > 0.5 ? 1 : -1,
+                    vy: Math.random() > 0.5 ? 1 : -1,
+                    size: Math.random() * 20 + 10
+                })
+            }
+
+            const coins = []
+            while (coins.length < 10) {
+                coins.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 10 + 5
+                })
+            }
+
+            function collision (obj1, obj2) {
+                const sizeSum = (obj1.size/2 + obj2.size/2)
+                return (Math.abs(obj1.x - obj2.x) < sizeSum) &&
+                       (Math.abs(obj1.y - obj2.y) < sizeSum)
+            }
+
+            function reset () {
+                player.x = Math.random() * canvas.width
+                player.y = Math.random() * canvas.height
+                player.score = 0
+
+                while (enemies.length > 0) enemies.pop()
+                while (enemies.length < 100) {
+                    enemies.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        vx: Math.random() > 0.5 ? 1 : -1,
+                        vy: Math.random() > 0.5 ? 1 : -1,
+                        size: Math.random() * 20 + 10
+                    })
+                }
+                while (coins.length > 0) coins.pop()
+                while (coins.length < 10) {
+                    coins.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        size: Math.random() * 10 + 5
+                    })
+                }
+            }
+            reset()
+
+
+            
+            /*
+            //enemies.length
+            enemies.push({
+                x: 5, y: 6,
+                vx: 1, vy: 1
+            })
+            //Math.random() * canvas.width
+            enemies.splice(i, 1)
+            const enemy = enemies[i]
+            /*enemies.forEach(function (enemy) {
+
+            })
+
+            function collision (obj1, obj2) {
+                ....
+                return ...
+            }
+            (obj1, obj2) => {...}
+            obj1 => {...}
+            */
+            
+
+            function render () {
+                requestAnimationFrame(render)
+                ctx.globalAlpha = 0.2 //efecte estela
+                ctx.fillStyle = 'lightblue'
+                ctx.fillRect(0, 0, canvas.width, canvas.height)
+                ctx.globalAlpha = 1 //efecte estela
+    
+                if (keyboard.a) player.x -= speed
+                if (keyboard.d) player.x += speed
+                if (keyboard.w) player.y -= speed
+                if (keyboard.s) player.y += speed
+                if (keyboard.q) {
+                    player.y -= speed
+                    player.x -= speed
+                }
+                if (keyboard.e) {
+                    player.y -= speed
+                    player.x += speed
+                }
+                if (keyboard.r) {
+                    reset()
+                }
+
+                //coin logic
+                coins.forEach((coin, i) => {
+                    if (collision(player, coin)) {
+                        player.score += Math.ceil(coin.size)
+                        coins.splice(i, 1)
+                    }
+                })
+
+                ctx.save()
+
+                ctx.translate(
+                    canvas.width/2 - player.x,
+                    canvas.height/2 - player.y
+                )
+
+                //coin render
+                coins.forEach(coin => {
+                    ctx.fillStyle = 'yellow'
+                    ctx.save()
+                    ctx.translate(coin.x, coin.y)
+                    ctx.rotate(Date.now()%(Math.PI*2))
+                    ctx.fillRect(
+                        -coin.size/2,
+                        -coin.size/2,
+                        coin.size,
+                        coin.size
+                    )
+                    ctx.restore()
+                })
+
+                let hasPlayerCollided = false
+            
+                //enemy logic
+                enemies.forEach(enemy => {
+                    enemy.x += enemy.vx
+                    enemy.y += enemy.vy
+                    if (enemy.x < 0 || canvas.width < enemy.x) enemy.vx *= -1
+                    if (enemy.y < 0 || canvas.height < enemy.y) enemy.vy *= -1
+                
+                    if (collision(enemy, player)) {
+                        //hasPlayerCollided = true
+                        //reset()
+                        if (enemy.x < player.x + player.size/2 || enemy.x > player.x + player.size/2) enemy.vx *= -1
+                        if (enemy.y < player.y + player.size/2 || enemy.y > player.y + player.size/2) enemy.vy *= -1
+                    }
+                    enemies.forEach(enemy2 => {
+                        if (collision(enemy, enemy2) && enemy != enemy2) {
+                            if (enemy.x < enemy2.x + enemy2.size/2 || enemy.x > enemy2.x + enemy2.size/2) enemy.vx *= -1
+                            if (enemy.y < enemy2.y + enemy2.size/2 || enemy.y > enemy2.y + enemy2.size/2) enemy.vy *= -1
+                        }
+                    })
+                })
+                
+                //enemy render
+                const sizeFactor = (1-(Date.now() / 500 % 1)) + 1 //efecte es van fent grans i petits
+                enemies.forEach(enemy => {
+                    ctx.fillStyle = 'green'
+                    const size = enemy.size * sizeFactor //efecte es van fent grans i petits
+                    ctx.fillRect(
+                        enemy.x - size/2,
+                        enemy.y - size/2,
+                        size,
+                        size
+                    )
+                })
+
+
+                /*
+                Array.prototype.forEach = function(callback) {
+                    for (let i = 0; i < this.lenght; ++i){
+                        const obj = this[i]
+                        callback(obj, i, this)
+                    }
+                }
+
+                enemies.forEach(function (enemy, i, arr) {
+                    enemy.x += enemy.vx
+                })
+
+                function someEnemy (enemy, i, arr) {
+                    ...
+                }
+
+                (enemy, i, arr ) => {...}
+                enemy => {...}
+                */
+
+                //player render
+                ctx.fillStyle = hasPlayerCollided ? 'cyan' : 'blue'
+                ctx.fillRect(player.x - player.size/2, player.y - player.size/2, player.size, player.size)
+
+                ctx.restore()
+
+                ctx.fillStyle = 'black'
+                ctx.font = '30px Helvetica'
+                ctx.fillText(`Score: ${player.score}`, 30, 40)
+            
+            }
+
+            //setInterval(render, 16) //no va sincronizado con el timer del navegador
+            requestAnimationFrame(render)
+
+            const keyboard = {}
+            document.addEventListener('keydown', function (event) {
+                keyboard[event.key] = true
+            })
+            document.addEventListener('keyup', function (event) {
+                keyboard[event.key] = false
+            })
+
+
+        </script>
+    </body>
+</html>

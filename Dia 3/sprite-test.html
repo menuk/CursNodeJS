@@ -1,0 +1,59 @@
+<html>
+    <head>
+        <style>
+            body, body {
+                padding: 0;
+                margin: 0;
+            }
+            canvas {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+        <scrip src="https://raw.githubusercontent.com/dasilvacontin/Eximo.js/master/Eximo.js"></script>
+    </head>
+    <body>
+        <script>
+            const canvas = document.createElement('canvas')
+            const ctx = canvas.getContext('2d')
+            document.body.appendChild(canvas)
+
+            canvas.width = window.innerWidth
+            canvas.height = window.innerHeight
+
+            //rect
+            //ctx.fillStyle = 'lightblue'
+            //ctx.fillRect(0, 0, canvas.width, canvas.height)
+            
+            let state
+            let myPlayer
+            function render () {
+                requestAnimationFrame(render)
+                ctx.fillRect(0,0,canvas.width,canvas.height)
+
+                Eximo.drawSprite('towerDefense_title270.png', ctx, 50, 50)
+            }
+            Eximo.loadSpriteSheet('tower-defense.json', render)
+            
+            const keyboard = {}
+
+            const mapping = {
+                'a': 'left',
+                'd': 'right',
+                'w': 'up',
+                's': 'down',
+                'q': 'upleft',
+                'e': 'upright'
+            }
+
+            document.addEventListener('keydown', function (event) {
+                keyboard[mapping[event.key]] = true
+                socket.emit('input', keyboard)
+            })
+            document.addEventListener('keyup', function (event) {
+                keyboard[mapping[event.key]] = false
+                socket.emit('input', keyboard)
+            })
+        </script>
+    </body>
+</html>
