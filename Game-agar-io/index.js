@@ -155,6 +155,7 @@ function logic () {
             --player.speed_buff_count
         }
         if (player.reboting_buff_count > 0) --player.reboting_buff_count
+        if (player.clone_buff_count > 160) buff += 1
         player.vx = 0
         player.vy = 0
         if (keyboard.left) player.vx = -(speed - player.size/250 + buff)
@@ -181,23 +182,31 @@ function logic () {
             player.y -= speed
             player.x += speed
         }*/
-        /*if (keyboard.space) {
-            player.size = player.size/2
-            players.push({
-                x: player.x,
-                y: player.y,
-                vx: player.vx,
-                vy: player.vy,
-                size: player.size,
-                id: player.id,
-                speed_buff_count: 0,
-                reboting_buff_count: 0,
-                keyboard: {}
-            })
-        }*/
+        if (player.clone_buff_count > 0) --player.clone_buff_count
+        if (player.clone_buff_count < 0) ++player.clone_buff_count
+        if (keyboard.space) {
+            if (player.clone_buff_count === 0) {
+                player.size = player.size/2
+                player.clone_buff_count = -200,
+                players.push({
+                    x: player.x,
+                    y: player.y,
+                    vx: player.vx,
+                    vy: player.vy,
+                    size: player.size,
+                    score: player.score,
+                    id: player.id,
+                    speed_buff_count: 0,
+                    reboting_buff_count: 0,
+                    clone_buff_count: 200,
+                    keyboard: player.keyboard
+                })
+            }
+        }
         players.forEach(player2 => {
             if (player != player2 && !player.dead && !player2.dead && collision(player, player2)) {
                 if (player.size > player2. size) {
+                    //if (player2.id === player.id) 
                     player.score += Math.ceil(player2.size/50)
                     player.size += Math.ceil(player2.size/50)
                     died(player2)
@@ -324,6 +333,7 @@ io.on('connection', (socket) => {
         id: socket.id,
         speed_buff_count: 0,
         reboting_buff_count: 0,
+        clone_buff_count: 0,
         keyboard: {}
     }
 
@@ -336,9 +346,9 @@ io.on('connection', (socket) => {
     socket.on('input', function (keyboard) {
         //console.log('got player input', keyboard)
         player.keyboard = keyboard
-        /*state.players.forEach(player2 => {
+        state.players.forEach(player2 => {
             if (!keyboard.space && player2.id === player.id) player2.keyboard = keyboard
-        })*/
+        })
         
     })
 
