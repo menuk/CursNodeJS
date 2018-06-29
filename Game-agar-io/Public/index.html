@@ -1,0 +1,208 @@
+<html>
+    <head>
+        <style>
+            body, body {
+                padding: 0;
+                margin: 0;
+            }
+            canvas {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+        <script src="/socket.io/socket.io.js"></script>
+    </head>
+    <body>
+        <script>
+            const canvas = document.createElement('canvas')
+            const ctx = canvas.getContext('2d')
+            document.body.appendChild(canvas)
+
+            canvas.width = window.innerWidth
+            canvas.height = window.innerHeight
+
+            //rect
+            ctx.fillStyle = 'lightblue'
+            ctx.stroke()
+            ctx.fillRect(0, 0, canvas.width, canvas.height)
+            
+            let state
+            let myPlayer
+            let scale = 1
+            function render () {
+                requestAnimationFrame(render)
+                if (state === undefined) return 
+
+                const { players, enemies, foods, speed_buff, reboting_buff } = state
+                //ctx.globalAlpha = 0.2 //efecte estela
+                
+                ctx.fillStyle = 'lightblue'
+                ctx.fillRect(0, 0, canvas.width, canvas.height)
+                //ctx.globalAlpha = 1 //efecte estela
+                ctx.save()
+                scale = 1/(1 + myPlayer.size/250) 
+                
+                // center camera on player
+                ctx.translate(
+                    canvas.width/2 - myPlayer.x * scale,
+                    canvas.height/2 - myPlayer.y * scale
+                ) 
+
+                ctx.scale(scale, scale)
+
+                ctx.beginPath()                
+                ctx.strokeStyle = 'black'
+                ctx.lineWidth = 5
+                ctx.strokeRect(0, 0, 7000, 7000)
+                ctx.fillStyle = 'white'
+                ctx.rect(0, 0, 7000, 7000)
+                ctx.fill()
+                ctx.closePath()
+                
+                //food render
+                const sizeFactor = (1-(Date.now() / 500 % 1)) + 1 //efecte es van fent grans i petits
+                foods.forEach(food => {
+                    ctx.fillStyle = 'yellow'
+                    const size = food.size + (sizeFactor*2) //efecte es van fent grans i petits
+                    ctx.save()
+                    ctx.translate(food.x, food.y)
+                    //ctx.rotate(Date.now()%(Math.PI*2))
+                    /*ctx.fillRect(
+                        -size/2,
+                        -size/2,
+                        size,
+                        size
+                    )*/
+                    ctx.beginPath()
+                    ctx.arc(0, 0, size, 0, Math.PI*2)
+                    ctx.fill()
+                    ctx.closePath()
+                    ctx.restore()
+                })
+
+                //speed_buff render
+                speed_buff.forEach(speed => {
+                    ctx.fillStyle = 'red'
+                    const size = speed.size + (sizeFactor*2) //efecte es van fent grans i petits
+                    ctx.save()
+                    ctx.translate(speed.x, speed.y)
+                    //ctx.rotate(Date.now()%(Math.PI*2))
+                    /*ctx.fillRect(
+                        -size/2,
+                        -size/2,
+                        size,
+                        size
+                    )*/
+                    ctx.beginPath()
+                    ctx.arc(0, 0, size, 0, Math.PI*2)
+                    ctx.fill()
+                    ctx.closePath()
+                    ctx.restore()
+                })
+
+                //reboting_buff render
+                reboting_buff.forEach(reboting => {
+                    ctx.fillStyle = 'blue'
+                    const size = reboting.size + (sizeFactor*2) //efecte es van fent grans i petits
+                    ctx.save()
+                    ctx.translate(reboting.x, reboting.y)
+                    //ctx.rotate(Date.now()%(Math.PI*2))
+                    /*ctx.fillRect(
+                        -size/2,
+                        -size/2,
+                        size,
+                        size
+                    )*/
+                    ctx.beginPath()
+                    ctx.arc(0, 0, size, 0, Math.PI*2)
+                    ctx.fill()
+                    ctx.closePath()
+                    ctx.restore()
+                })
+                
+                //enemy render
+                enemies.forEach(enemy => {
+                    ctx.fillStyle = 'green'
+                    /*ctx.fillRect(
+                        enemy.x - enemy.size/2,
+                        enemy.y - enemy.size/2,
+                        enemy.size,
+                        enemy.size
+                    )*/
+                    ctx.beginPath()
+                    ctx.arc(enemy.x, enemy.y, enemy.size, 0, Math.PI*2)
+                    ctx.fill()
+                    ctx.closePath()
+                })
+
+                //player render
+                players.forEach(player => {
+                    if (player.dead) return
+                    ctx.fillStyle = (player === myPlayer) ? 'orange' : 'darkred'
+                    ctx.beginPath()
+                    ctx.arc(player.x, player.y, player.size, 0, Math.PI*2)
+                    ctx.fill()
+                    //ctx.fillRect(player.x - player.size/2, player.y - player.size/2, player.size, player.size)
+                    ctx.fillStyle = 'white'
+                    ctx.textAlign = 'center'
+                    ctx.font = `${player.size}px Helvetica`
+                    ctx.lineWidth = 5
+                    ctx.strokeText(player.username, player.x, player.y + player.size/4)
+                    ctx.fillText(player.username, player.x, player.y + player.size/4)
+                    //ctx.stroke()
+                    ctx.closePath()
+                })
+                
+                ctx.restore()
+
+                /*ctx.fillStyle = 'black'
+                ctx.font = '30px Helvetica'
+                ctx.fillText(`Score: ${myPlayer.score}`, 30, 40)*/
+
+                players.sort((a, b) => b.score - a.score)
+                players.forEach((player, i) => {
+                    ctx.fillStyle = (player === myPlayer)? 'blue' : 'green'
+                    ctx.font = '20px Helvetica'
+                    ctx.fillText(`${player.username}: ${player.score}`, 30, 40 + i*30)
+            })
+            }
+
+            //setInterval(render, 16) //no va sincronizado con el timer del navegador
+            requestAnimationFrame(render)
+
+            const keyboard = {}
+
+            const mapping = {
+                'a': 'left',
+                'd': 'right',
+                'w': 'up',
+                's': 'down',
+                ' ': 'space'
+                /*'q': 'upleft',
+                'e': 'upright'*/
+            }
+
+            document.addEventListener('keydown', function (event) {
+                keyboard[mapping[event.key]] = true
+                socket.emit('input', keyboard)
+            })
+            document.addEventListener('keyup', function (event) {
+                keyboard[mapping[event.key]] = false
+                socket.emit('input', keyboard)
+            })
+
+            const socket = io()
+
+            socket.emit('set-username', prompt('Username?'))
+
+            socket.on('state', function (newState) {
+                state = newState
+                myPlayer = state.players.find(player => {
+                    return (player.id === socket.id)
+                })
+                //console.log(state, myPlayer)
+            })
+
+        </script>
+    </body>
+</html>

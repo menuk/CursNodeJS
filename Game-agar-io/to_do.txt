@@ -1,0 +1,6 @@
+//Nom amb borde negre pq es vegi i lletres blanques! Fer bordes més grans
+speed acabar d'afinar-la
+bordes del mapa que no pugui creuar el player
+boles amb propietats
+poder-te dividir
+poder enviar miniboletes
