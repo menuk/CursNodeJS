@@ -16,7 +16,7 @@ server.listen(port, () => {
 });
 
 // Routing
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'Public')));
 //sirve arxivos estaticos, si me mandan una request GET quecoincide con el PATH s me dara el arxivo en la carpeta public
 
 const state = {
